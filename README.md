@@ -239,42 +239,42 @@ Data uploaded into S3 is spread across multiple files and facilities. The files 
 - Amazon guarantees 99.999999999% (or 11 9s) durability for all S3 storage classes except its Reduced Redundancy Storage class.
 - S3 comes with the following main features:
 
-  1.) tiered storage and pricing variability
+  1) tiered storage and pricing variability
 
-  2.) lifecycle management to expire older content
+  2) lifecycle management to expire older content
 
-  3.) versioning for version control
+  3) versioning for version control
 
-  4.) encryption for privacy
+  4) encryption for privacy
 
-  5.) MFA deletes to prevent accidental or malicious removal of content
+  5) MFA deletes to prevent accidental or malicious removal of content
 
-  6.) access control lists & bucket policies to secure the data
+  6) access control lists & bucket policies to secure the data
 
 - S3 charges by:
 
-  1.) storage size
+  1) storage size
 
-  2.) number of requests
+  2) number of requests
 
-  3.) storage management pricing (known as tiers)
+  3) storage management pricing (known as tiers)
 
-  4.) data transfer pricing (objects leaving/entering AWS via the internet)
+  4) data transfer pricing (objects leaving/entering AWS via the internet)
 
-  5.) transfer acceleration (an optional speed increase for moving objects via Cloudfront)
+  5) transfer acceleration (an optional speed increase for moving objects via Cloudfront)
 
-  6.) cross region replication (more HA than offered by default)
+  6) cross region replication (more HA than offered by default)
 
 - Bucket policies secure data at the bucket level while access control lists secure data at the more granular object level.
 - By default, all newly created buckets are private.
 - S3 can be configured to create access logs which can be shipped into another bucket in the current account or even a separate account all together. This makes it easy to monitor who accesses what inside S3.
 - There are 3 different ways to share S3 buckets across AWS accounts:
 
-  1.) For programmatic access only, use IAM & Bucket Policies to share entire buckets
+  1) For programmatic access only, use IAM & Bucket Policies to share entire buckets
 
-  2.) For programmatic access only, use ACLs & Bucket Policies to share objects
+  2) For programmatic access only, use ACLs & Bucket Policies to share objects
 
-  3.) For access via the console & the terminal, use cross-account IAM roles
+  3) For access via the console & the terminal, use cross-account IAM roles
 
 - S3 is a great candidate for static website hosting. When you enable static website hosting for S3 you need both an index.html file and an error.html file. Static website hosting creates a website endpoint that can be accessed via the internet.
 - When you upload new files and have versioning enabled, they will not inherit the properties of the previous version. 
@@ -288,7 +288,7 @@ Data uploaded into S3 is spread across multiple files and facilities. The files 
 
 **S3 Intelligent Tiering** - Uses built-in ML/AI to determine the most cost-effective storage class and then automatically moves your data to the appropriate tier. It does this without operational overhead or performance impact.
 
-**S3 Glacier** - low-cost storage class for data archiving. This class is for pure storage purposes where retrieval isn’t needed often at all. Retrieval times range from minutes to hours. There are differing retrieval methods depending on how acceptable the default retrieval times are for you:
+**S3 Glacier** - low-cost storage class for data archiving. This class is for pure storage purposes where retrieval isn’t needed often at all. Retrieval times range from minutes to hours. There are different retrieval methods depending on how acceptable the default retrieval times are for you:
 
     Expedited: 1 - 5 minutes, but this option is the most expensive.
     Standard: 3 - 5 hours to restore.
@@ -326,7 +326,7 @@ You can encrypt on the AWS supported server-side in the following ways:
 - Lifecycle rules can be applied to both current and previous versions of an object.
 
 ### S3 Cross Region Replication:
-- Cross region replication only work if versioning is enabled.
+- Cross region replication only works if versioning is enabled.
 - When cross region replication is enabled, no pre-existing data is transferred. Only new uploads into the original bucket are replicated. All subsequent updates are replicated.
 - When you replicate the contents of one bucket to another, you can actually change the ownership of the content if you want. You can also change the storage tier of the new bucket with the replicated content.
 - When files are deleted in the original bucket (via a delete marker as versioning prevents true deletions), those deletes are not replicated.
@@ -364,7 +364,7 @@ The Amazon S3 notification feature enables you to receive and send notifications
 
 ### S3 Multipart Upload:
 - Multipart upload allows you to upload a single object as a set of parts. Each part is a contiguous portion of the object's data. You can upload these object parts independently and in any order. 
-- Multipart uploads are recommended for files over 100 MB and is *the only way* to upload files over 5 GB. It achieves functionality by uploading your data in parallel to boost efficiency.
+- Multipart uploads are recommended for files over 100 MB and is *the only way* to upload files over 5 GB. It improves functionality by uploading your data in parallel to boost efficiency.
 - If transmission of any part fails, you can retransmit that part without affecting other parts. After all parts of your object are uploaded, Amazon S3 assembles these parts and creates the object.
 - Possible reasons for why you would want to use Multipart upload:
   - Multipart upload delivers the ability to begin an upload before you know the final object size.
@@ -398,6 +398,18 @@ The Amazon S3 notification feature enables you to receive and send notifications
 - By reducing the volume of data that has to be loaded and processed by your applications, S3 Select can improve the performance of most applications that frequently access data from S3 by up to 400% because you’re dealing with significantly less data.
 - You can also use S3 Select for Glacier.
 
+### S3 Exam Questions:
+
+    A financial services firm uses a high-frequency trading system and wants to write the log files into Amazon S3. The system will also read these log files in parallel on a near real-time basis. The engineering team wants to address any data discrepancies that might arise when the trading system overwrites an existing log file and then tries to read that specific log file.
+
+    Which of the following options BEST describes the capabilities of Amazon S3 relevant to this scenario?
+
+        A) A process replaces an existing object and immediately tries to read it. Until the change is fully propagated, Amazon S3 might return the previous data
+        B) A process replaces an existing object and immediately tries to read it. Amazon S3 always returns the latest version of the object
+        C) A process replaces an existing object and immediately tries to read it. Until the change is fully propagated, Amazon S3 does not return any data
+        D) A process replaces an existing object and immediately tries to read it. Until the change is fully propagated, Amazon S3 might return the new data
+
+    Correct answer: B. Amazon S3 delivers strong read-after-write consistency automatically, without changes to performance or availability, without sacrificing regional isolation for applications, and at no additional cost. After a successful write of a new object or an overwrite of an existing object, any subsequent read request immediately receives the latest version of the object. S3 also provides strong consistency for list operations, so after a write, you can immediately perform a listing of the objects in a bucket with any changes reflected. Strong read-after-write consistency helps when you need to immediately read an object after a write. For example, strong read-after-write consistency when you often read and list immediately after writing objects. To summarize, all S3 GET, PUT, and LIST operations, as well as operations that change object tags, ACLs, or metadata, are strongly consistent. What you write is what you will read, and the results of a LIST will be an accurate reflection of what’s in the bucket.
 
 ## CloudFront
 
